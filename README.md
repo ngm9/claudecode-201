@@ -1,37 +1,90 @@
-# E-Commerce Inventory Management Backend Task
+> **Real Engineering Task** — created with [Utkrusht.ai](https://utkrusht.ai)
 
-## Task Overview
-ShopFlow is an e-commerce platform managing products across multiple suppliers, categories, and warehouses. Your task is to design the PostgreSQL schema and implement database logic for a FastAPI application that handles complex inventory workflows, such as stock tracking per warehouse, price changes with historical tracking, low-stock detection, movement logging, and purchase order processing. Implementing both the normalized schema and async FastAPI integration is essential to ensure ShopFlow operates reliably, scales for high concurrency, and maintains correct real-time inventory data for business continuity and growth.
+# ShopFlow — E-Commerce Inventory Management API
+
+## Overview
+
+ShopFlow is an e-commerce platform managing products across multiple suppliers, categories, and warehouses. Your task is to design the database logic and implement FastAPI endpoints for inventory workflows: stock tracking per warehouse, price changes with historical tracking, low-stock detection, and movement logging.
+
+## Tech Stack
+
+- **Python 3.10+**, FastAPI, Uvicorn
+- **Supabase** (hosted PostgreSQL) — no local database needed
+- **Pydantic** for request/response validation
+
+## Setup
+
+### 1. Clone and install
+
+```bash
+git clone https://github.com/ngm9/claudecode-201.git
+cd claudecode-201
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+### 2. Configure environment
+
+Copy `.env.example` to `.env` and fill in your Supabase credentials:
+
+```bash
+cp .env.example .env
+```
+
+We'll share a `.env` file with Supabase credentials at the workshop.
+
+### 3. Run the server
+
+```bash
+uvicorn app.main:app --reload --port 8000
+```
+
+## Project Structure
+
+```
+app/
+├── main.py                  # FastAPI app entry point
+├── database.py              # Supabase client initialization
+├── models/
+│   └── database_models.py   # DAO layer (database access functions)
+├── routes/
+│   └── api.py               # API endpoint handlers
+└── schemas/
+    └── schemas.py           # Pydantic request/response models
+schema.sql                   # Database schema (run in Supabase SQL editor)
+data/sample_data.sql         # Sample data for testing
+```
+
+## Endpoints
+
+| Endpoint | Method | Status |
+|----------|--------|--------|
+| `/products` | GET | Implemented (has a bug!) |
+| `/inventory/update` | POST | Working |
+| `/inventory/low_stock` | GET | TODO |
+| `/price/bulk_update` | POST | TODO |
+| `/inventory/transfer` | POST | TODO |
+| `/inventory/valuation` | GET | TODO |
 
 ## Objectives
-- Create a lightweight schema that defines products, basic categories, warehouses, and inventory records in a clear relational structure.
-- Establish essential relationships so that product and inventory information remain consistent across the system.
-- Seed the database with a small but meaningful dataset that enables product listing, category filtering, and simple inventory checks.
-- Ensure FastAPI endpoints interact with the database using asynchronous operations for smooth request handling.
-- Include a simple mechanism to record inventory adjustments so that changes can be traced during verification.
-- Maintain reliable behavior in core workflows such as product retrieval and stock updates.
 
-## Database Access
-- **Host:** `<DROPLET_IP>`
-- **Port:** 5432
-- **Database:** shopflow
-- **User:** shopuser
-- **Password:** shoppass
-
-You may connect directly with psql/DBeaver/pgAdmin for DB access. Test implemented endpoints via Postman or curl as you build out async logic.
+- Establish relational integrity across products, categories, warehouses, and inventory
+- Implement async FastAPI endpoints using the Supabase client
+- Include inventory adjustment tracking via the movements table
+- Maintain reliable behavior in core workflows
 
 ## How to Verify
-- Load your schema and sample data into the database and inspect the tables to ensure they reflect the intended structure.
-- Use the provided API endpoints to confirm that product listings, category filters, and basic searches return consistent results.
-- Update inventory for a product and check that the change is reflected correctly in both the API responses and the database records.
-- Test a few invalid or boundary conditions—such as negative quantities or unknown categories—to confirm that the system responds meaningfully.
-- Review any tracking records for inventory adjustments to ensure they provide clear and useful information about changes.
-- Perform a small number of concurrent requests to validate that the API remains responsive and that data consistency is preserved.
+
+- `GET /products` — currently returns a 500 (there's a bug to find!)
+- `POST /inventory/update` — update stock for a product in a warehouse
+- `GET /inventory/low_stock` — should return 501 (not yet implemented)
+- Load schema and sample data into Supabase and inspect tables
+- Test boundary conditions (negative quantities, unknown categories)
 
 ## Helpful Tips
-- Explore the existing FastAPI project structure in `/root/task/app/` to understand how routing and database access are organized.
-- Review the empty SQL files provided for schema and initial data; your task is to create a concise structure that supports basic product and inventory operations.
-- All database interactions in the FastAPI routes rely on async-compatible SQL helpers, so keep non-blocking patterns in mind when designing your data model.
-- Focus on the core flow: listing products, checking available stock, and updating inventory during standard operations.
-- Think through how inventory adjustments should be tracked so that the system preserves meaningful state after each update.
-- Consider how simple indexing or relationship design can help common lookups behave more predictably.
+
+- Explore the FastAPI project structure in `app/` to understand routing and data access
+- The Supabase client is initialized in `database.py` — use `get_supabase()` everywhere
+- Focus on the core flow: list products, check stock, update inventory
+- The DAO pattern in `models/database_models.py` is the reference for new features

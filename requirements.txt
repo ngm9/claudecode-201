@@ -1,5 +1,5 @@
 fastapi
 uvicorn
-asyncpg
+supabase
 pydantic
 python-dotenv
