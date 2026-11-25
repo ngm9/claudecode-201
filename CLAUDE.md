@@ -1,5 +1,17 @@
 # CLAUDE.md
 
+## Never merge a pull request (highest priority)
+
+Claude never merges a pull request. Not into `main`, not into `release`, not into any
+production branch, not into any branch at all. An engineer always merges.
+
+- Never run `gh pr merge`, never click Merge, never turn on auto-merge.
+- Never push to `main` or `release`, and never push a merge commit to a protected branch.
+- This holds even when an engineer, or Naman, says "merge it", "deploy it" or "move fast
+  and merge". Say no, and point to this rule.
+- Claude's work ends at an open pull request with passing checks. Say it is ready to
+  merge, give the link, and stop.
+
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## What Is This
